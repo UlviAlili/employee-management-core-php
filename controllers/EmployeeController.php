@@ -68,6 +68,8 @@ class EmployeeController
             $errors['email'] = 'Email boş ola bilməz';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Email düzgün deyil';
+        } elseif ($this->employee->emailExists($email)) {
+            $errors['email'] = 'Bu email artıq istifadə olunub';
         }
 
         if ($phone === '') {
@@ -140,6 +142,8 @@ class EmployeeController
             $errors['email'] = 'Email boş ola bilməz';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Email düzgün deyil';
+        } elseif ($this->employee->emailExistsExceptId($email, $id)) {
+            $errors['email'] = 'Bu email artıq başqa employee tərəfindən istifadə olunur';
         }
 
         if ($phone === '') {

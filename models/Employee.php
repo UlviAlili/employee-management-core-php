@@ -142,4 +142,27 @@ class Employee
             'id' => $id
         ]);
     }
+
+    public function emailExists(string $email): bool
+    {
+        $sql = "SELECT id FROM {$this->table} WHERE email = :email LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'email' => $email
+        ]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
+    }
+
+    public function emailExistsExceptId(string $email, int $id): bool
+    {
+        $sql = "SELECT id FROM {$this->table} WHERE email = :email AND id != :id LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'email' => $email,
+            'id' => $id
+        ]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC) ? true : false;
+    }
 }
