@@ -13,7 +13,29 @@ class EmployeeController
     {
         $search = trim($_GET['search'] ?? '');
 
-        $employees = $this->employee->getAll($search);
+        $page = (int)($_GET['page'] ?? 1);
+
+        if ($page < 1) {
+            $page = 1;
+        }
+
+        $perPage = 10;
+
+        $totalRecords = $this->employee->countAll($search);
+
+        $totalPages = (int)ceil($totalRecords / $perPage);
+
+        if ($totalPages < 1) {
+            $totalPages = 1;
+        }
+
+        if ($page > $totalPages) {
+            $page = $totalPages;
+        }
+
+        $offset = ($page - 1) * $perPage;
+
+        $employees = $this->employee->getAll($search, $perPage, $offset);
 
         require '../views/employees/index.php';
     }

@@ -10,7 +10,7 @@ class Employee
         $this->conn = $db;
     }
 
-    public function getAll(string $search = ''): array
+    public function getAll(string $search = '', int $limit = 10, int $offset = 0): array
     {
         if ($search !== '') {
             $sql = "
@@ -19,6 +19,40 @@ class Employee
                 OR last_name LIKE :search
                 OR email LIKE :search
                 ORDER BY id DESC
+                LIMIT :limit OFFSET :offset
+            ";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $sql = "
+            SELECT * FROM {$this->table}
+            ORDER BY id DESC
+            LIMIT :limit OFFSET :offset
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function countAll(string $search = ''): int
+    {
+        if ($search !== '') {
+            $sql = "
+                SELECT COUNT(*) as total FROM {$this->table}
+                WHERE first_name LIKE :search
+                OR last_name LIKE :search
+                OR email LIKE :search
             ";
 
             $stmt = $this->conn->prepare($sql);
@@ -26,14 +60,18 @@ class Employee
                 'search' => '%' . $search . '%'
             ]);
 
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return (int)$result['total'];
         }
 
-        $sql = "SELECT * FROM {$this->table} ORDER BY id DESC";
+        $sql = "SELECT COUNT(*) as total FROM {$this->table}";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return (int)$result['total'];
     }
 
     public function create(array $data): bool

@@ -81,5 +81,47 @@
     </tbody>
 </table>
 
+<br>
+
+<?php if ($totalPages > 1): ?>
+    <div>
+        <?php if ($page > 1): ?>
+            <a href="index.php?<?= http_build_query([
+                'action' => 'index',
+                'search' => $search,
+                'page' => $page - 1
+            ]) ?>">
+                Əvvəlki
+            </a>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <?php if ($i == $page): ?>
+                <strong style="margin: 0 5px;">
+                    <?= $i ?>
+                </strong>
+            <?php else: ?>
+                <a style="margin: 0 5px;" href="index.php?<?= http_build_query([
+                    'action' => 'index',
+                    'search' => $search,
+                    'page' => $i
+                ]) ?>">
+                    <?= $i ?>
+                </a>
+            <?php endif; ?>
+        <?php endfor; ?>
+
+        <?php if ($page < $totalPages): ?>
+            <a href="index.php?<?= http_build_query([
+                'action' => 'index',
+                'search' => $search,
+                'page' => $page + 1
+            ]) ?>">
+                Növbəti
+            </a>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
+
 </body>
 </html>
