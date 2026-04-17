@@ -10,8 +10,25 @@ class Employee
         $this->conn = $db;
     }
 
-    public function getAll(): array
+    public function getAll(string $search = ''): array
     {
+        if ($search !== '') {
+            $sql = "
+                SELECT * FROM {$this->table}
+                WHERE first_name LIKE :search
+                OR last_name LIKE :search
+                OR email LIKE :search
+                ORDER BY id DESC
+            ";
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([
+                'search' => '%' . $search . '%'
+            ]);
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
         $sql = "SELECT * FROM {$this->table} ORDER BY id DESC";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();

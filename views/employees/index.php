@@ -12,6 +12,25 @@
 
 <br><br>
 
+<form action="index.php" method="GET">
+    <input type="hidden" name="action" value="index">
+
+    <input 
+        type="text" 
+        name="search" 
+        placeholder="Ad və ya email üzrə axtar..." 
+        value="<?= htmlspecialchars($search ?? '') ?>"
+    >
+
+    <button type="submit">Axtar</button>
+
+    <?php if (!empty($search)): ?>
+        <a href="index.php">Təmizlə</a>
+    <?php endif; ?>
+</form>
+
+<br>
+
 <table border="1" cellpadding="10" cellspacing="0">
     <thead>
         <tr>
@@ -50,7 +69,13 @@
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="6">Employee yoxdur</td>
+                <td colspan="6">
+                    <?php if (!empty($search)): ?>
+                        Axtarışa uyğun employee tapılmadı
+                    <?php else: ?>
+                        Employee yoxdur
+                    <?php endif; ?>
+                </td>
             </tr>
         <?php endif; ?>
     </tbody>

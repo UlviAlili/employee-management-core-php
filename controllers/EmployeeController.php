@@ -11,7 +11,9 @@ class EmployeeController
 
     public function index(): void
     {
-        $employees = $this->employee->getAll();
+        $search = trim($_GET['search'] ?? '');
+
+        $employees = $this->employee->getAll($search);
 
         require '../views/employees/index.php';
     }
