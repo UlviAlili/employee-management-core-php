@@ -77,4 +77,14 @@ class Employee
             'salary' => $data['salary'],
         ]);
     }
+
+    public function delete(int $id): bool
+    {
+        $sql = "DELETE FROM {$this->table} WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+
+        return $stmt->execute([
+            'id' => $id
+        ]);
+    }
 }

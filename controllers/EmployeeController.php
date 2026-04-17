@@ -152,4 +152,18 @@ class EmployeeController
         header('Location: index.php');
         exit;
     }
+
+    public function delete(): void
+    {
+        $id = (int)($_GET['id'] ?? 0);
+
+        if ($id <= 0) {
+            die('Yanlış ID');
+        }
+
+        $this->employee->delete($id);
+
+        header('Location: index.php');
+        exit;
+    }
 }
