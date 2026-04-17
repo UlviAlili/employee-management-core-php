@@ -12,6 +12,14 @@ $controller = new EmployeeController($db);
 $action = $_GET['action'] ?? 'index';
 
 switch ($action) {
+    case 'create':
+        $controller->create();
+        break;
+
+    case 'store':
+        $controller->store();
+        break;
+
     case 'index':
     default:
         $controller->index();
